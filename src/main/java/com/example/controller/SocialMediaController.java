@@ -66,21 +66,16 @@ public class SocialMediaController {
     }
 
     @DeleteMapping("/messages/{messageId}")
-    public ResponseEntity<Message> deleteMessageById(@PathVariable int messageId){
-        Message toBeDeleted = messageService.getMessageById(messageId);
-            messageService.deleteMessageById(messageId);
-            return new ResponseEntity<>(toBeDeleted,HttpStatus.OK);
+    public ResponseEntity<Integer> deleteMessageById(@PathVariable int messageId){
+            return new ResponseEntity<>(messageService.deleteMessageById(messageId),HttpStatus.OK);
     }
 
     @PatchMapping("/messages/{messageId}")
-    public ResponseEntity<Message> updateMessage(@PathVariable int messageId, @RequestBody String newMessageText){
-        if(messageService.updateMessage(messageId, newMessageText)==null
-        || newMessageText.isEmpty()
-        || newMessageText.isBlank()
-        || newMessageText==""){
+    public ResponseEntity<Integer> updateMessage(@PathVariable int messageId, @RequestBody Message message){
+        if(messageService.updateMessage(messageId, message.getMessageText())==null){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }else{
-            return new ResponseEntity<>(messageService.updateMessage(messageId, newMessageText), HttpStatus.OK);
+            return new ResponseEntity<>(messageService.updateMessage(messageId, message.getMessageText()), HttpStatus.OK);
         }
     }
 

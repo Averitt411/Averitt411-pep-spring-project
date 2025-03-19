@@ -7,7 +7,6 @@ import com.example.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,28 +44,30 @@ public class MessageService {
         return null;
     }
 
-    public Message deleteMessageById(int messageId){
+    public Integer deleteMessageById(int messageId){
         Optional<Message> messageOptional = messageRepository.findById(messageId);
         if(messageOptional.isPresent()){
-            Message message1 = messageOptional.get();
+            Integer messageCount = messageRepository.countByMessageId(messageId);
             messageRepository.deleteById(messageId);
-            return message1;
+            return messageCount;
         }else{
             return null;
         }
     }
 
-    public Message updateMessage(int messageId, String newMessageText){
-        if(newMessageText==null 
-        || newMessageText.isEmpty()
-        || newMessageText.length()>255 
+    public Integer updateMessage(int messageId, String messageText){
+        if(messageText==null 
+        || messageText.isEmpty()
+        || messageText.length()>255 
         || !messageRepository.findById(messageId).isPresent()){
             return null;
         }else{
             Message message = messageRepository.findById(messageId).get();
-            message.setMessageText(newMessageText);
-            return messageRepository.save(message);
-        }
+            Integer messageCount = messageRepository.countByMessageId(messageId);
+            message.setMessageText(messageText);
+            messageRepository.save(message);
+            return messageCount;
+       }
     }
 
     public List<Message> getAllMessagesByUser(int postedBy){
